@@ -9,8 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RenovacoesRouteImport } from './routes/renovacoes'
+import { Route as PropostasRouteImport } from './routes/propostas'
+import { Route as PipelineRouteImport } from './routes/pipeline'
+import { Route as MulticalculoRouteImport } from './routes/multicalculo'
+import { Route as LeadsRouteImport } from './routes/leads'
+import { Route as ComparadorRouteImport } from './routes/comparador'
+import { Route as ClientesRouteImport } from './routes/clientes'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RenovacoesRoute = RenovacoesRouteImport.update({
+  id: '/renovacoes',
+  path: '/renovacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropostasRoute = PropostasRouteImport.update({
+  id: '/propostas',
+  path: '/propostas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PipelineRoute = PipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MulticalculoRoute = MulticalculoRouteImport.update({
+  id: '/multicalculo',
+  path: '/multicalculo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadsRoute = LeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComparadorRoute = ComparadorRouteImport.update({
+  id: '/comparador',
+  path: '/comparador',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientesRoute = ClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +67,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/clientes': typeof ClientesRoute
+  '/comparador': typeof ComparadorRoute
+  '/leads': typeof LeadsRoute
+  '/multicalculo': typeof MulticalculoRoute
+  '/pipeline': typeof PipelineRoute
+  '/propostas': typeof PropostasRoute
+  '/renovacoes': typeof RenovacoesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/clientes': typeof ClientesRoute
+  '/comparador': typeof ComparadorRoute
+  '/leads': typeof LeadsRoute
+  '/multicalculo': typeof MulticalculoRoute
+  '/pipeline': typeof PipelineRoute
+  '/propostas': typeof PropostasRoute
+  '/renovacoes': typeof RenovacoesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/clientes': typeof ClientesRoute
+  '/comparador': typeof ComparadorRoute
+  '/leads': typeof LeadsRoute
+  '/multicalculo': typeof MulticalculoRoute
+  '/pipeline': typeof PipelineRoute
+  '/propostas': typeof PropostasRoute
+  '/renovacoes': typeof RenovacoesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/clientes'
+    | '/comparador'
+    | '/leads'
+    | '/multicalculo'
+    | '/pipeline'
+    | '/propostas'
+    | '/renovacoes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/clientes'
+    | '/comparador'
+    | '/leads'
+    | '/multicalculo'
+    | '/pipeline'
+    | '/propostas'
+    | '/renovacoes'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/clientes'
+    | '/comparador'
+    | '/leads'
+    | '/multicalculo'
+    | '/pipeline'
+    | '/propostas'
+    | '/renovacoes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  ClientesRoute: typeof ClientesRoute
+  ComparadorRoute: typeof ComparadorRoute
+  LeadsRoute: typeof LeadsRoute
+  MulticalculoRoute: typeof MulticalculoRoute
+  PipelineRoute: typeof PipelineRoute
+  PropostasRoute: typeof PropostasRoute
+  RenovacoesRoute: typeof RenovacoesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/renovacoes': {
+      id: '/renovacoes'
+      path: '/renovacoes'
+      fullPath: '/renovacoes'
+      preLoaderRoute: typeof RenovacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/propostas': {
+      id: '/propostas'
+      path: '/propostas'
+      fullPath: '/propostas'
+      preLoaderRoute: typeof PropostasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pipeline': {
+      id: '/pipeline'
+      path: '/pipeline'
+      fullPath: '/pipeline'
+      preLoaderRoute: typeof PipelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/multicalculo': {
+      id: '/multicalculo'
+      path: '/multicalculo'
+      fullPath: '/multicalculo'
+      preLoaderRoute: typeof MulticalculoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leads': {
+      id: '/leads'
+      path: '/leads'
+      fullPath: '/leads'
+      preLoaderRoute: typeof LeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comparador': {
+      id: '/comparador'
+      path: '/comparador'
+      fullPath: '/comparador'
+      preLoaderRoute: typeof ComparadorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clientes': {
+      id: '/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof ClientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,7 +217,24 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  ClientesRoute: ClientesRoute,
+  ComparadorRoute: ComparadorRoute,
+  LeadsRoute: LeadsRoute,
+  MulticalculoRoute: MulticalculoRoute,
+  PipelineRoute: PipelineRoute,
+  PropostasRoute: PropostasRoute,
+  RenovacoesRoute: RenovacoesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
