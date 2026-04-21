@@ -1,4 +1,5 @@
-import { Link, Outlet, useLocation } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, UserPlus, Calculator, GitCompare,
@@ -17,7 +18,7 @@ const nav = [
   { to: "/admin", label: "Administração", icon: Settings },
 ] as const;
 
-export function AppShell() {
+export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
   return (
     <div className="min-h-screen flex bg-background text-foreground">
