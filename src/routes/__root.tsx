@@ -37,6 +37,10 @@ export const Route = createRootRoute({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Solvent — CRM para corretores de seguros" },
+      { name: "twitter:description", content: "Multicálculo, comparador inteligente e pipeline para corretoras." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/306e9d33-3dfb-47f5-ab47-f26047358c47/id-preview-663fe9c7--393197c4-da7b-48d7-aade-319323ac2f77.lovable.app-1776812360042.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/306e9d33-3dfb-47f5-ab47-f26047358c47/id-preview-663fe9c7--393197c4-da7b-48d7-aade-319323ac2f77.lovable.app-1776812360042.png" },
     ],
     links: [
       {
