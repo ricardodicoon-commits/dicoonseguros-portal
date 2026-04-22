@@ -219,10 +219,17 @@ function LoginPage() {
             </div>
 
             {/* Demo Access */}
-            <div className="p-3 rounded-lg bg-surface border border-border text-sm text-muted-foreground">
-              <p className="font-medium mb-1">Acesso para demonstração:</p>
-              <p>E-mail: demo@dicoonseguros.com</p>
-              <p>Senha: qualquer valor</p>
+            <div className="p-3 rounded-lg bg-surface border border-border text-xs text-muted-foreground space-y-2">
+              <p className="font-medium text-foreground">Credenciais de acesso:</p>
+              {DEMO_USERS.map((u) => (
+                <div key={u.email} className="flex flex-col">
+                  <span>
+                    <span className="font-medium capitalize text-foreground">{u.role}:</span>{" "}
+                    {u.email}
+                  </span>
+                  <span className="text-muted-foreground">Senha: {u.password}</span>
+                </div>
+              ))}
             </div>
           </div>
 
