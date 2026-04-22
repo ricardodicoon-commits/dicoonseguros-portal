@@ -9,16 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as RenovacoesRouteImport } from './routes/renovacoes'
 import { Route as PropostasRouteImport } from './routes/propostas'
+import { Route as PropostaRouteImport } from './routes/proposta'
 import { Route as PipelineRouteImport } from './routes/pipeline'
+import { Route as NovaCotacaoRouteImport } from './routes/nova-cotacao'
 import { Route as MulticalculoRouteImport } from './routes/multicalculo'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LeadsRouteImport } from './routes/leads'
+import { Route as DocumentosRouteImport } from './routes/documentos'
 import { Route as ComparadorRouteImport } from './routes/comparador'
 import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TimelineRoute = TimelineRouteImport.update({
+  id: '/timeline',
+  path: '/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RenovacoesRoute = RenovacoesRouteImport.update({
   id: '/renovacoes',
   path: '/renovacoes',
@@ -29,9 +39,19 @@ const PropostasRoute = PropostasRouteImport.update({
   path: '/propostas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PropostaRoute = PropostaRouteImport.update({
+  id: '/proposta',
+  path: '/proposta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PipelineRoute = PipelineRouteImport.update({
   id: '/pipeline',
   path: '/pipeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NovaCotacaoRoute = NovaCotacaoRouteImport.update({
+  id: '/nova-cotacao',
+  path: '/nova-cotacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MulticalculoRoute = MulticalculoRouteImport.update({
@@ -39,9 +59,19 @@ const MulticalculoRoute = MulticalculoRouteImport.update({
   path: '/multicalculo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LeadsRoute = LeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentosRoute = DocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComparadorRoute = ComparadorRouteImport.update({
@@ -70,22 +100,32 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/clientes': typeof ClientesRoute
   '/comparador': typeof ComparadorRoute
+  '/documentos': typeof DocumentosRoute
   '/leads': typeof LeadsRoute
+  '/login': typeof LoginRoute
   '/multicalculo': typeof MulticalculoRoute
+  '/nova-cotacao': typeof NovaCotacaoRoute
   '/pipeline': typeof PipelineRoute
+  '/proposta': typeof PropostaRoute
   '/propostas': typeof PropostasRoute
   '/renovacoes': typeof RenovacoesRoute
+  '/timeline': typeof TimelineRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/clientes': typeof ClientesRoute
   '/comparador': typeof ComparadorRoute
+  '/documentos': typeof DocumentosRoute
   '/leads': typeof LeadsRoute
+  '/login': typeof LoginRoute
   '/multicalculo': typeof MulticalculoRoute
+  '/nova-cotacao': typeof NovaCotacaoRoute
   '/pipeline': typeof PipelineRoute
+  '/proposta': typeof PropostaRoute
   '/propostas': typeof PropostasRoute
   '/renovacoes': typeof RenovacoesRoute
+  '/timeline': typeof TimelineRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,11 +133,16 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/clientes': typeof ClientesRoute
   '/comparador': typeof ComparadorRoute
+  '/documentos': typeof DocumentosRoute
   '/leads': typeof LeadsRoute
+  '/login': typeof LoginRoute
   '/multicalculo': typeof MulticalculoRoute
+  '/nova-cotacao': typeof NovaCotacaoRoute
   '/pipeline': typeof PipelineRoute
+  '/proposta': typeof PropostaRoute
   '/propostas': typeof PropostasRoute
   '/renovacoes': typeof RenovacoesRoute
+  '/timeline': typeof TimelineRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,33 +151,48 @@ export interface FileRouteTypes {
     | '/admin'
     | '/clientes'
     | '/comparador'
+    | '/documentos'
     | '/leads'
+    | '/login'
     | '/multicalculo'
+    | '/nova-cotacao'
     | '/pipeline'
+    | '/proposta'
     | '/propostas'
     | '/renovacoes'
+    | '/timeline'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
     | '/clientes'
     | '/comparador'
+    | '/documentos'
     | '/leads'
+    | '/login'
     | '/multicalculo'
+    | '/nova-cotacao'
     | '/pipeline'
+    | '/proposta'
     | '/propostas'
     | '/renovacoes'
+    | '/timeline'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/clientes'
     | '/comparador'
+    | '/documentos'
     | '/leads'
+    | '/login'
     | '/multicalculo'
+    | '/nova-cotacao'
     | '/pipeline'
+    | '/proposta'
     | '/propostas'
     | '/renovacoes'
+    | '/timeline'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,15 +200,27 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   ClientesRoute: typeof ClientesRoute
   ComparadorRoute: typeof ComparadorRoute
+  DocumentosRoute: typeof DocumentosRoute
   LeadsRoute: typeof LeadsRoute
+  LoginRoute: typeof LoginRoute
   MulticalculoRoute: typeof MulticalculoRoute
+  NovaCotacaoRoute: typeof NovaCotacaoRoute
   PipelineRoute: typeof PipelineRoute
+  PropostaRoute: typeof PropostaRoute
   PropostasRoute: typeof PropostasRoute
   RenovacoesRoute: typeof RenovacoesRoute
+  TimelineRoute: typeof TimelineRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/timeline': {
+      id: '/timeline'
+      path: '/timeline'
+      fullPath: '/timeline'
+      preLoaderRoute: typeof TimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/renovacoes': {
       id: '/renovacoes'
       path: '/renovacoes'
@@ -163,11 +235,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PropostasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/proposta': {
+      id: '/proposta'
+      path: '/proposta'
+      fullPath: '/proposta'
+      preLoaderRoute: typeof PropostaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pipeline': {
       id: '/pipeline'
       path: '/pipeline'
       fullPath: '/pipeline'
       preLoaderRoute: typeof PipelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nova-cotacao': {
+      id: '/nova-cotacao'
+      path: '/nova-cotacao'
+      fullPath: '/nova-cotacao'
+      preLoaderRoute: typeof NovaCotacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/multicalculo': {
@@ -177,11 +263,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MulticalculoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/leads': {
       id: '/leads'
       path: '/leads'
       fullPath: '/leads'
       preLoaderRoute: typeof LeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documentos': {
+      id: '/documentos'
+      path: '/documentos'
+      fullPath: '/documentos'
+      preLoaderRoute: typeof DocumentosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comparador': {
@@ -220,12 +320,26 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ClientesRoute: ClientesRoute,
   ComparadorRoute: ComparadorRoute,
+  DocumentosRoute: DocumentosRoute,
   LeadsRoute: LeadsRoute,
+  LoginRoute: LoginRoute,
   MulticalculoRoute: MulticalculoRoute,
+  NovaCotacaoRoute: NovaCotacaoRoute,
   PipelineRoute: PipelineRoute,
+  PropostaRoute: PropostaRoute,
   PropostasRoute: PropostasRoute,
   RenovacoesRoute: RenovacoesRoute,
+  TimelineRoute: TimelineRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

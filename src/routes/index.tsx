@@ -135,7 +135,7 @@ function DashboardPage() {
             <p className="text-sm text-muted-foreground mt-1">3 clientes aguardam cotações</p>
           </div>
           <button
-            onClick={() => navigate({ to: "/cotacao" })}
+            onClick={() => navigate({ to: "/nova-cotacao" })}
             className="mt-4 w-full px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
           >
             Nova Cotação
@@ -166,7 +166,11 @@ function DashboardPage() {
             </thead>
             <tbody>
               {opportunities.slice(0, 5).map((o) => (
-                <tr key={o.id} className="border-t border-border hover:bg-surface transition-colors">
+                <tr
+                  key={o.id}
+                  onClick={() => navigate({ to: "/timeline", search: { op: o.id } as any })}
+                  className="border-t border-border hover:bg-surface transition-colors cursor-pointer"
+                >
                   <td className="px-4 py-3 font-medium">{o.client}</td>
                   <td className="px-4 py-3 text-muted-foreground">{o.product}</td>
                   <td className="px-4 py-3 text-right font-mono">R$ {o.value.toLocaleString("pt-BR")}</td>
@@ -183,5 +187,5 @@ function DashboardPage() {
       </div>
     </AppShell>
   );
-
+}
 
