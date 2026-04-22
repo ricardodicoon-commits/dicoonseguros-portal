@@ -46,7 +46,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
   const navigate = useNavigate();
 
-  const userEmail = (typeof window !== "undefined" && sessionStorage.getItem("user_email")) || "usuario@solvent.com";
+  const userEmail = getUserEmail() || "usuario@solvent.com";
   const userName = userEmail.split("@")[0].replace(/\./g, " ");
   const initials = userName
     .split(" ")
@@ -55,8 +55,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     .join("");
 
   const handleLogout = () => {
-    sessionStorage.removeItem("auth_token");
-    sessionStorage.removeItem("user_email");
+    clearAuth();
     navigate({ to: "/login" });
   };
 

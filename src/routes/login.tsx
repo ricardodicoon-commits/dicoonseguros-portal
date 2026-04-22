@@ -23,8 +23,8 @@ function LoginPage() {
     setTimeout(() => {
       if (email && password) {
         // Simula sucesso
-        sessionStorage.setItem("auth_token", "demo-token-123");
-        sessionStorage.setItem("user_email", email);
+        const { setAuth } = await import("@/lib/auth");
+        setAuth("demo-token-123", email);
         navigate({ to: "/" });
       } else {
         setError("Preencha todos os campos");
