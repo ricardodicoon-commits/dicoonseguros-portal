@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff, Shield, CheckCircle2 } from "lucide-react";
-import { setAuth } from "@/lib/auth";
+import { setAuth, validateCredentials, DEMO_USERS } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
