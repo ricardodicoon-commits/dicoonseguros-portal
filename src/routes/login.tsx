@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff, Shield, CheckCircle2 } from "lucide-react";
+import { setAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -23,8 +24,7 @@ function LoginPage() {
     setTimeout(() => {
       if (email && password) {
         // Simula sucesso
-        sessionStorage.setItem("auth_token", "demo-token-123");
-        sessionStorage.setItem("user_email", email);
+        setAuth("demo-token-123", email);
         navigate({ to: "/" });
       } else {
         setError("Preencha todos os campos");

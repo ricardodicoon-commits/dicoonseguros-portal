@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { getAuthToken } from "@/lib/auth";
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { PageHeader } from "@/components/PageHeader";
@@ -6,7 +7,7 @@ import { Search, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/leads")({
   beforeLoad: async () => {
-    const token = sessionStorage.getItem("auth_token");
+    const token = getAuthToken();
     if (!token) {
       throw redirect({ to: "/login" });
     }

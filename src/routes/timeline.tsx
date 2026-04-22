@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { getAuthToken } from "@/lib/auth";
 import { AppShell } from "@/components/AppShell";
 import { PageHeader } from "@/components/PageHeader";
 import { Phone, Mail, FileText, CheckCircle2, AlertCircle, MessageCircle, Plus } from "lucide-react";
@@ -7,7 +8,7 @@ import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/timeline")({
   beforeLoad: async () => {
-    const token = sessionStorage.getItem("auth_token");
+    const token = getAuthToken();
     if (!token) {
       throw redirect({ to: "/login" });
     }

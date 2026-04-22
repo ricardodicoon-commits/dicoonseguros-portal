@@ -6,6 +6,7 @@ import {
   FileText, Kanban, RefreshCw, Settings, Search, Bell, Plus,
   FilePlus2, FolderOpen, History, LogOut,
 } from "lucide-react";
+import { clearAuth, getUserEmail } from "@/lib/auth";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard };
 type NavGroup = { label: string; items: NavItem[] };
@@ -45,7 +46,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
   const navigate = useNavigate();
 
-  const userEmail = (typeof window !== "undefined" && sessionStorage.getItem("user_email")) || "usuario@solvent.com";
+  const userEmail = getUserEmail() || "usuario@solvent.com";
   const userName = userEmail.split("@")[0].replace(/\./g, " ");
   const initials = userName
     .split(" ")
@@ -54,8 +55,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     .join("");
 
   const handleLogout = () => {
-    sessionStorage.removeItem("auth_token");
-    sessionStorage.removeItem("user_email");
+    clearAuth();
     navigate({ to: "/login" });
   };
 
