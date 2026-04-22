@@ -1,11 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { getAuthToken } from "@/lib/auth";
 import { AppShell } from "@/components/AppShell";
 import { PageHeader } from "@/components/PageHeader";
 import { AlertCircle, Phone, FileText } from "lucide-react";
 
 export const Route = createFileRoute("/renovacoes")({
   beforeLoad: async () => {
-    const token = sessionStorage.getItem("auth_token");
+    const token = getAuthToken();
     if (!token) {
       throw redirect({ to: "/login" });
     }
