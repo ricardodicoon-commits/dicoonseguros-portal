@@ -20,17 +20,26 @@ function LoginPage() {
     setError("");
     setIsLoading(true);
 
-    // Simulação de login (auth em produção)
     setTimeout(() => {
-      if (email && password) {
-        // Simula sucesso
-        setAuth("demo-token-123", email);
-        navigate({ to: "/" });
-      } else {
+      if (!email || !password) {
         setError("Preencha todos os campos");
+        setIsLoading(false);
+        return;
       }
+      const user = validateCredentials(email, password);
+      if (!user) {
+        setError("E-mail ou senha incorretos");
+        setIsLoading(false);
+        return;
+      }
+      setAuth("demo-token-" + Date.now(), {
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      });
+      navigate({ to: "/" });
       setIsLoading(false);
-    }, 800);
+    }, 600);
   };
 
   const benefits = [
