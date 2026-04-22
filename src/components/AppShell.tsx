@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Users, UserPlus, Calculator, GitCompare,
   FileText, Kanban, RefreshCw, Settings, Search, Bell, Plus,
   FilePlus2, FolderOpen, History, LogOut,
-} from "lucide-react";
+import { clearAuth, getUserEmail } from "@/lib/auth";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard };
 type NavGroup = { label: string; items: NavItem[] };
