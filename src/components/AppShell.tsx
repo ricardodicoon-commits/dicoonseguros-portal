@@ -6,7 +6,7 @@ import {
   FileText, Kanban, RefreshCw, Settings, Search, Bell, Plus,
   FilePlus2, FolderOpen, History, LogOut,
 } from "lucide-react";
-import { clearAuth, getUserEmail } from "@/lib/auth";
+import { clearAuth, getCurrentUser } from "@/lib/auth";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard };
 type NavGroup = { label: string; items: NavItem[] };
@@ -46,13 +46,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
   const navigate = useNavigate();
 
-  const userEmail = getUserEmail() || "usuario@solvent.com";
-  const userName = userEmail.split("@")[0].replace(/\./g, " ");
+  const user = getCurrentUser();
+  const userEmail = user?.email ?? "";
+  const userName = user?.name ?? userEmail.split("@")[0] ?? "Convidado";
+  const userRole = user?.role ?? null;
   const initials = userName
     .split(" ")
     .map((w) => w[0]?.toUpperCase())
+    .filter(Boolean)
     .slice(0, 2)
-    .join("");
+    .join("") || "US";
 
   const handleLogout = () => {
     clearAuth();
@@ -115,8 +118,15 @@ export function AppShell({ children }: { children: ReactNode }) {
               {initials || "US"}
             </div>
             <div className="leading-tight min-w-0 flex-1">
-              <div className="text-sm font-medium truncate capitalize">{userName}</div>
-              <div className="text-xs text-muted-foreground truncate">{userEmail}</div>
+              <div className="text-sm font-medium truncate">{userName}</div>
+              <div className="text-xs text-muted-foreground truncate flex items-center gap-1.5">
+                {userRole && (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider font-semibold bg-primary/15 text-primary">
+                    {userRole}
+                  </span>
+                )}
+                <span className="truncate">{userEmail}</span>
+              </div>
             </div>
             <button
               onClick={handleLogout}
