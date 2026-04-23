@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { clearAuth, getCurrentUser } from "@/lib/auth";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard };
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
 
 const navGroups: NavGroup[] = [
@@ -38,7 +38,7 @@ const navGroups: NavGroup[] = [
   },
   {
     label: "Sistema",
-    items: [{ to: "/admin", label: "Administração", icon: Settings }],
+    items: [{ to: "/admin", label: "Administração", icon: Settings, adminOnly: true }],
   },
 ];
 
@@ -78,13 +78,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="flex-1 px-3 space-y-4 overflow-y-auto pb-4">
-          {navGroups.map((group) => (
+          {navGroups.map((group) => {
+            const visibleItems = group.items.filter(
+              (item) => !item.adminOnly || userRole === "admin",
+            );
+            if (visibleItems.length === 0) return null;
+            return (
             <div key={group.label}>
               <div className="px-3 mb-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70 font-medium">
                 {group.label}
               </div>
               <div className="space-y-0.5">
-                {group.items.map(({ to, label, icon: Icon }) => {
+                {visibleItems.map(({ to, label, icon: Icon }) => {
                   const active = loc.pathname === to || (to !== "/" && loc.pathname.startsWith(to));
                   return (
                     <Link
@@ -109,7 +114,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 })}
               </div>
             </div>
-          ))}
+            );
+          })}
         </nav>
 
         <div className="p-4 border-t border-sidebar-border">
