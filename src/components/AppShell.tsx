@@ -68,11 +68,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="px-5 pt-6 pb-6">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="size-8 rounded-lg bg-gradient-amber grid place-items-center shadow-glow">
-              <span className="font-display font-bold text-primary-foreground text-sm">S</span>
+              <span className="font-display font-bold text-primary-foreground text-sm">D</span>
             </div>
             <div className="leading-tight">
-              <div className="font-display font-semibold text-base">Solvent</div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">CRM Seguros</div>
+              <div className="font-display font-semibold text-base">Dicoon</div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Seguros</div>
             </div>
           </Link>
         </div>

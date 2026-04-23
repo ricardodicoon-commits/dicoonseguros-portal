@@ -5,7 +5,7 @@ import { Construction } from "lucide-react";
 import { getAuthToken, getUserRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Administração · Solvent" }] }),
+  head: () => ({ meta: [{ title: "Administração · Dicoon Seguros" }] }),
   beforeLoad: () => {
     if (!getAuthToken()) {
       throw redirect({ to: "/login" });
