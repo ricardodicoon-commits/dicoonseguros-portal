@@ -1,33 +1,46 @@
-// Auth helpers safe for SSR (sessionStorage only exists in the browser).
+// Auth helpers safe for SSR (storage só existe no browser).
+// Mock de credenciais para demo — substituir por Lovable Cloud + Supabase Auth quando o usuário pedir backend real.
 
-// Credenciais de acesso ao portal (mock — sem backend ainda)
+export type UserRole = "admin" | "corretor";
+
 export type DemoUser = {
   email: string;
   password: string;
   name: string;
-  role: "admin" | "corretor" | "gerente";
+  role: UserRole;
+};
+
+export type SessionUser = {
+  email: string;
+  name: string;
+  role: UserRole;
 };
 
 export const DEMO_USERS: DemoUser[] = [
   {
-    email: "admin@dicoonseguros.com",
+    email: "admin@solvent.com",
     password: "Admin@2025",
     name: "Administrador",
     role: "admin",
   },
   {
-    email: "corretor@dicoonseguros.com",
+    email: "corretor@solvent.com",
     password: "Corretor@2025",
     name: "Júlia Marques",
     role: "corretor",
   },
-  {
-    email: "gerente@dicoonseguros.com",
-    password: "Gerente@2025",
-    name: "Ricardo Souza",
-    role: "gerente",
-  },
 ];
+
+const STORAGE_KEY = "solvent_session";
+
+function getStorage(): Storage | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
 
 export function validateCredentials(email: string, password: string): DemoUser | null {
   const normalized = email.trim().toLowerCase();
@@ -38,61 +51,55 @@ export function validateCredentials(email: string, password: string): DemoUser |
   );
 }
 
-export function getAuthToken(): string | null {
-  if (typeof window === "undefined") return null;
+export function getSession(): { token: string; user: SessionUser } | null {
+  const storage = getStorage();
+  if (!storage) return null;
   try {
-    return window.sessionStorage.getItem("auth_token");
+    const raw = storage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { token: string; user: SessionUser };
+    if (!parsed?.token || !parsed?.user?.email) return null;
+    return parsed;
   } catch {
     return null;
   }
+}
+
+export function getAuthToken(): string | null {
+  return getSession()?.token ?? null;
+}
+
+export function getCurrentUser(): SessionUser | null {
+  return getSession()?.user ?? null;
 }
 
 export function getUserEmail(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    return window.sessionStorage.getItem("user_email");
-  } catch {
-    return null;
-  }
+  return getCurrentUser()?.email ?? null;
 }
 
 export function getUserName(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    return window.sessionStorage.getItem("user_name");
-  } catch {
-    return null;
-  }
+  return getCurrentUser()?.name ?? null;
 }
 
-export function getUserRole(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    return window.sessionStorage.getItem("user_role");
-  } catch {
-    return null;
-  }
+export function getUserRole(): UserRole | null {
+  return getCurrentUser()?.role ?? null;
 }
 
-export function clearAuth(): void {
-  if (typeof window === "undefined") return;
+export function setAuth(token: string, user: SessionUser): void {
+  const storage = getStorage();
+  if (!storage) return;
   try {
-    window.sessionStorage.removeItem("auth_token");
-    window.sessionStorage.removeItem("user_email");
-    window.sessionStorage.removeItem("user_name");
-    window.sessionStorage.removeItem("user_role");
+    storage.setItem(STORAGE_KEY, JSON.stringify({ token, user }));
   } catch {
     /* noop */
   }
 }
 
-export function setAuth(token: string, user: { email: string; name: string; role: string }): void {
-  if (typeof window === "undefined") return;
+export function clearAuth(): void {
+  const storage = getStorage();
+  if (!storage) return;
   try {
-    window.sessionStorage.setItem("auth_token", token);
-    window.sessionStorage.setItem("user_email", user.email);
-    window.sessionStorage.setItem("user_name", user.name);
-    window.sessionStorage.setItem("user_role", user.role);
+    storage.removeItem(STORAGE_KEY);
   } catch {
     /* noop */
   }
