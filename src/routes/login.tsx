@@ -1,9 +1,14 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useState } from "react";
-import { Eye, EyeOff, Shield, CheckCircle2 } from "lucide-react";
-import { setAuth, validateCredentials, DEMO_USERS } from "@/lib/auth";
+import { Eye, EyeOff, Shield, CheckCircle2, ShieldCheck, Briefcase } from "lucide-react";
+import { setAuth, validateCredentials, DEMO_USERS, getAuthToken } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: () => {
+    if (getAuthToken()) {
+      throw redirect({ to: "/" });
+    }
+  },
   component: LoginPage,
 });
 
@@ -40,6 +45,12 @@ function LoginPage() {
       navigate({ to: "/" });
       setIsLoading(false);
     }, 600);
+  };
+
+  const fillCredentials = (u: (typeof DEMO_USERS)[number]) => {
+    setEmail(u.email);
+    setPassword(u.password);
+    setError("");
   };
 
   const benefits = [
