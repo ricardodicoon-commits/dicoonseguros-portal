@@ -1,9 +1,14 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useState } from "react";
-import { Eye, EyeOff, Shield, CheckCircle2 } from "lucide-react";
-import { setAuth, validateCredentials, DEMO_USERS } from "@/lib/auth";
+import { Eye, EyeOff, Shield, CheckCircle2, ShieldCheck, Briefcase } from "lucide-react";
+import { setAuth, validateCredentials, DEMO_USERS, getAuthToken } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: () => {
+    if (getAuthToken()) {
+      throw redirect({ to: "/" });
+    }
+  },
   component: LoginPage,
 });
 
@@ -40,6 +45,12 @@ function LoginPage() {
       navigate({ to: "/" });
       setIsLoading(false);
     }, 600);
+  };
+
+  const fillCredentials = (u: (typeof DEMO_USERS)[number]) => {
+    setEmail(u.email);
+    setPassword(u.password);
+    setError("");
   };
 
   const benefits = [
@@ -218,18 +229,33 @@ function LoginPage() {
               <div className="flex-1 h-px bg-border"></div>
             </div>
 
-            {/* Demo Access */}
-            <div className="p-3 rounded-lg bg-surface border border-border text-xs text-muted-foreground space-y-2">
-              <p className="font-medium text-foreground">Credenciais de acesso:</p>
-              {DEMO_USERS.map((u) => (
-                <div key={u.email} className="flex flex-col">
-                  <span>
-                    <span className="font-medium capitalize text-foreground">{u.role}:</span>{" "}
-                    {u.email}
-                  </span>
-                  <span className="text-muted-foreground">Senha: {u.password}</span>
-                </div>
-              ))}
+            {/* Perfis demo — clique para preencher */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-foreground">Acesso rápido (demo):</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {DEMO_USERS.map((u) => {
+                  const Icon = u.role === "admin" ? ShieldCheck : Briefcase;
+                  return (
+                    <button
+                      key={u.email}
+                      type="button"
+                      onClick={() => fillCredentials(u)}
+                      className="text-left p-3 rounded-lg border border-border bg-surface hover:border-primary/50 hover:bg-surface-elevated transition-colors group"
+                    >
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <Icon className="w-3.5 h-3.5 text-primary" />
+                        <span className="text-xs font-semibold text-foreground capitalize">
+                          {u.role}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground truncate">{u.email}</p>
+                      <p className="text-[11px] font-mono text-muted-foreground/80 mt-0.5">
+                        {u.password}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

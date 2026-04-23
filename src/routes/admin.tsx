@@ -1,10 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { PageHeader } from "@/components/PageHeader";
 import { Construction } from "lucide-react";
+import { getAuthToken, getUserRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Administração · Solvent" }] }),
+  beforeLoad: () => {
+    if (!getAuthToken()) {
+      throw redirect({ to: "/login" });
+    }
+    if (getUserRole() !== "admin") {
+      throw redirect({ to: "/" });
+    }
+  },
   component: () => (
     <AppShell>
       <PageHeader eyebrow="Configurações" title="Administração" description="Usuários, permissões, integrações e regras comerciais." />

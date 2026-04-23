@@ -6,9 +6,9 @@ import {
   FileText, Kanban, RefreshCw, Settings, Search, Bell, Plus,
   FilePlus2, FolderOpen, History, LogOut,
 } from "lucide-react";
-import { clearAuth, getUserEmail } from "@/lib/auth";
+import { clearAuth, getCurrentUser } from "@/lib/auth";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard };
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
 
 const navGroups: NavGroup[] = [
@@ -38,7 +38,7 @@ const navGroups: NavGroup[] = [
   },
   {
     label: "Sistema",
-    items: [{ to: "/admin", label: "Administração", icon: Settings }],
+    items: [{ to: "/admin", label: "Administração", icon: Settings, adminOnly: true }],
   },
 ];
 
@@ -46,13 +46,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
   const navigate = useNavigate();
 
-  const userEmail = getUserEmail() || "usuario@solvent.com";
-  const userName = userEmail.split("@")[0].replace(/\./g, " ");
+  const user = getCurrentUser();
+  const userEmail = user?.email ?? "";
+  const userName = user?.name ?? userEmail.split("@")[0] ?? "Convidado";
+  const userRole = user?.role ?? null;
   const initials = userName
     .split(" ")
     .map((w) => w[0]?.toUpperCase())
+    .filter(Boolean)
     .slice(0, 2)
-    .join("");
+    .join("") || "US";
 
   const handleLogout = () => {
     clearAuth();
@@ -75,13 +78,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="flex-1 px-3 space-y-4 overflow-y-auto pb-4">
-          {navGroups.map((group) => (
+          {navGroups.map((group) => {
+            const visibleItems = group.items.filter(
+              (item) => !item.adminOnly || userRole === "admin",
+            );
+            if (visibleItems.length === 0) return null;
+            return (
             <div key={group.label}>
               <div className="px-3 mb-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70 font-medium">
                 {group.label}
               </div>
               <div className="space-y-0.5">
-                {group.items.map(({ to, label, icon: Icon }) => {
+                {visibleItems.map(({ to, label, icon: Icon }) => {
                   const active = loc.pathname === to || (to !== "/" && loc.pathname.startsWith(to));
                   return (
                     <Link
@@ -106,7 +114,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 })}
               </div>
             </div>
-          ))}
+            );
+          })}
         </nav>
 
         <div className="p-4 border-t border-sidebar-border">
@@ -115,8 +124,15 @@ export function AppShell({ children }: { children: ReactNode }) {
               {initials || "US"}
             </div>
             <div className="leading-tight min-w-0 flex-1">
-              <div className="text-sm font-medium truncate capitalize">{userName}</div>
-              <div className="text-xs text-muted-foreground truncate">{userEmail}</div>
+              <div className="text-sm font-medium truncate">{userName}</div>
+              <div className="text-xs text-muted-foreground truncate flex items-center gap-1.5">
+                {userRole && (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider font-semibold bg-primary/15 text-primary">
+                    {userRole}
+                  </span>
+                )}
+                <span className="truncate">{userEmail}</span>
+              </div>
             </div>
             <button
               onClick={handleLogout}
