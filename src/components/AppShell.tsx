@@ -1,12 +1,13 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, UserPlus, Calculator, GitCompare,
   FileText, Kanban, RefreshCw, Settings, Search, Bell, Plus,
   FilePlus2, FolderOpen, History, LogOut,
 } from "lucide-react";
-import { clearAuth, getCurrentUser } from "@/lib/auth";
+import { clearAuth, getCurrentUser, onSessionChange } from "@/lib/auth";
+
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
