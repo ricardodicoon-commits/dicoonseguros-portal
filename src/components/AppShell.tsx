@@ -1,12 +1,13 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, UserPlus, Calculator, GitCompare,
   FileText, Kanban, RefreshCw, Settings, Search, Bell, Plus,
   FilePlus2, FolderOpen, History, LogOut,
 } from "lucide-react";
-import { clearAuth, getCurrentUser } from "@/lib/auth";
+import { clearAuth, getCurrentUser, onSessionChange } from "@/lib/auth";
+
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
@@ -46,10 +47,29 @@ export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
   const navigate = useNavigate();
 
-  const user = getCurrentUser();
-  const userEmail = user?.email ?? "";
-  const userName = user?.name ?? userEmail.split("@")[0] ?? "Convidado";
-  const userRole = user?.role ?? null;
+  const [user, setUser] = useState(() => getCurrentUser());
+
+  // Global session guard: re-evaluate on session changes (logout in this/other tab)
+  // and force redirect to /login when there's no session on a protected screen.
+  useEffect(() => {
+    const sync = () => {
+      const current = getCurrentUser();
+      setUser(current);
+      if (!current && loc.pathname !== "/login") {
+        navigate({ to: "/login", replace: true });
+      }
+    };
+    sync();
+    return onSessionChange(sync);
+  }, [loc.pathname, navigate]);
+
+  // Block rendering protected UI without a session (avoids flash of content).
+  if (!user) return null;
+
+  const userEmail = user.email ?? "";
+  const userName = user.name ?? userEmail.split("@")[0] ?? "Convidado";
+  const userRole = user.role ?? null;
+
   const initials = userName
     .split(" ")
     .map((w) => w[0]?.toUpperCase())

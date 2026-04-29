@@ -85,11 +85,36 @@ export function getUserRole(): UserRole | null {
   return getCurrentUser()?.role ?? null;
 }
 
+const SESSION_EVENT = "solvent:session-changed";
+
+function emitSessionChange(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.dispatchEvent(new Event(SESSION_EVENT));
+  } catch {
+    /* noop */
+  }
+}
+
+export function onSessionChange(handler: () => void): () => void {
+  if (typeof window === "undefined") return () => {};
+  const storageHandler = (e: StorageEvent) => {
+    if (e.key === STORAGE_KEY || e.key === null) handler();
+  };
+  window.addEventListener(SESSION_EVENT, handler);
+  window.addEventListener("storage", storageHandler);
+  return () => {
+    window.removeEventListener(SESSION_EVENT, handler);
+    window.removeEventListener("storage", storageHandler);
+  };
+}
+
 export function setAuth(token: string, user: SessionUser): void {
   const storage = getStorage();
   if (!storage) return;
   try {
     storage.setItem(STORAGE_KEY, JSON.stringify({ token, user }));
+    emitSessionChange();
   } catch {
     /* noop */
   }
@@ -100,7 +125,9 @@ export function clearAuth(): void {
   if (!storage) return;
   try {
     storage.removeItem(STORAGE_KEY);
+    emitSessionChange();
   } catch {
     /* noop */
   }
 }
+
