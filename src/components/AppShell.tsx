@@ -47,10 +47,29 @@ export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
   const navigate = useNavigate();
 
-  const user = getCurrentUser();
-  const userEmail = user?.email ?? "";
-  const userName = user?.name ?? userEmail.split("@")[0] ?? "Convidado";
-  const userRole = user?.role ?? null;
+  const [user, setUser] = useState(() => getCurrentUser());
+
+  // Global session guard: re-evaluate on session changes (logout in this/other tab)
+  // and force redirect to /login when there's no session on a protected screen.
+  useEffect(() => {
+    const sync = () => {
+      const current = getCurrentUser();
+      setUser(current);
+      if (!current && loc.pathname !== "/login") {
+        navigate({ to: "/login", replace: true });
+      }
+    };
+    sync();
+    return onSessionChange(sync);
+  }, [loc.pathname, navigate]);
+
+  // Block rendering protected UI without a session (avoids flash of content).
+  if (!user) return null;
+
+  const userEmail = user.email ?? "";
+  const userName = user.name ?? userEmail.split("@")[0] ?? "Convidado";
+  const userRole = user.role ?? null;
+
   const initials = userName
     .split(" ")
     .map((w) => w[0]?.toUpperCase())
