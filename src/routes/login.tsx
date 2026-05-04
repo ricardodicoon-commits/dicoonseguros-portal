@@ -14,15 +14,28 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [view, setView] = useState<"login" | "register" | "forgot_password">("login");
+  
+  // Form states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  const [registerName, setRegisterName] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  
+  const [forgotEmail, setForgotEmail] = useState("");
+
+  // UI states
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccessMessage("");
     setIsLoading(true);
 
     setTimeout(() => {
@@ -47,10 +60,50 @@ function LoginPage() {
     }, 600);
   };
 
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+    setIsLoading(true);
+
+    setTimeout(() => {
+      if (!registerName || !registerEmail || !registerPassword) {
+        setError("Preencha todos os campos");
+        setIsLoading(false);
+        return;
+      }
+      // Simulate account creation
+      setSuccessMessage("Conta criada com sucesso! Faça login para continuar.");
+      setView("login");
+      setEmail(registerEmail);
+      setIsLoading(false);
+    }, 600);
+  };
+
+  const handleForgotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+    setIsLoading(true);
+
+    setTimeout(() => {
+      if (!forgotEmail) {
+        setError("Preencha o e-mail");
+        setIsLoading(false);
+        return;
+      }
+      // Simulate email sending
+      setSuccessMessage(`Um e-mail de recuperação e autorização foi enviado para ${forgotEmail}`);
+      setView("login");
+      setIsLoading(false);
+    }, 600);
+  };
+
   const fillCredentials = (u: (typeof DEMO_USERS)[number]) => {
     setEmail(u.email);
     setPassword(u.password);
     setError("");
+    setSuccessMessage("");
   };
 
   const benefits = [
@@ -123,7 +176,7 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* Right Side - Login Card */}
+      {/* Right Side - Form Container */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
@@ -149,132 +202,307 @@ function LoginPage() {
             <h1 className="text-2xl font-bold text-foreground">Bem-vindo</h1>
           </div>
 
-          {/* Login Form */}
           <div className="rounded-2xl border border-border bg-card p-8 shadow-elegant">
-            <h2 className="text-2xl font-bold text-foreground mb-2">Acessar plataforma</h2>
-            <p className="text-sm text-muted-foreground mb-6">
-              Cotações simultâneas e gestão comercial em um só lugar
-            </p>
+            {view === "login" && (
+              <>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Acessar plataforma</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Cotações simultâneas e gestão comercial em um só lugar
+                </p>
 
-            {error && (
-              <div className="mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-sm text-destructive">
-                {error}
-              </div>
+                {successMessage && (
+                  <div className="mb-6 p-3 rounded-lg bg-green-500/10 border border-green-500/30 text-sm text-green-600 dark:text-green-400">
+                    {successMessage}
+                  </div>
+                )}
+
+                {error && (
+                  <div className="mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-sm text-destructive">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleLoginSubmit} className="space-y-4">
+                  {/* Email Field */}
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                      E-mail
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="seu@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      autoFocus
+                      className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                      required
+                    />
+                  </div>
+
+                  {/* Password Field */}
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+                      Senha
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Login Button */}
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full mt-6 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                        Entrando...
+                      </>
+                    ) : (
+                      "Entrar"
+                    )}
+                  </button>
+                </form>
+
+                {/* Divider */}
+                <div className="my-6 flex items-center">
+                  <div className="flex-1 h-px bg-border"></div>
+                  <span className="px-3 text-xs text-muted-foreground">ou</span>
+                  <div className="flex-1 h-px bg-border"></div>
+                </div>
+
+                {/* Perfis demo */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-foreground">Acesso rápido (demo):</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {DEMO_USERS.map((u) => {
+                      const Icon = u.role === "admin" ? ShieldCheck : Briefcase;
+                      return (
+                        <button
+                          key={u.email}
+                          type="button"
+                          onClick={() => fillCredentials(u)}
+                          className="text-left p-3 rounded-lg border border-border bg-surface hover:border-primary/50 hover:bg-surface-elevated transition-colors group"
+                        >
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <Icon className="w-3.5 h-3.5 text-primary" />
+                            <span className="text-xs font-semibold text-foreground capitalize">
+                              {u.role}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-muted-foreground truncate">{u.email}</p>
+                          <p className="text-[11px] font-mono text-muted-foreground/80 mt-0.5">
+                            {u.password}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email Field */}
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                  E-mail
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoFocus
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                  required
-                />
-              </div>
+            {view === "register" && (
+              <>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Criar conta</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Crie sua senha e login para acessar a plataforma
+                </p>
 
-              {/* Password Field */}
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
-                  Senha
-                </label>
-                <div className="relative">
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Login Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full mt-6 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                    Entrando...
-                  </>
-                ) : (
-                  "Entrar"
+                {error && (
+                  <div className="mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-sm text-destructive">
+                    {error}
+                  </div>
                 )}
-              </button>
-            </form>
 
-            {/* Divider */}
-            <div className="my-6 flex items-center">
-              <div className="flex-1 h-px bg-border"></div>
-              <span className="px-3 text-xs text-muted-foreground">ou</span>
-              <div className="flex-1 h-px bg-border"></div>
-            </div>
+                <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="registerName" className="block text-sm font-medium text-foreground mb-2">
+                      Nome completo
+                    </label>
+                    <input
+                      id="registerName"
+                      type="text"
+                      placeholder="Seu nome"
+                      value={registerName}
+                      onChange={(e) => setRegisterName(e.target.value)}
+                      autoFocus
+                      className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="registerEmail" className="block text-sm font-medium text-foreground mb-2">
+                      E-mail
+                    </label>
+                    <input
+                      id="registerEmail"
+                      type="email"
+                      placeholder="seu@email.com"
+                      value={registerEmail}
+                      onChange={(e) => setRegisterEmail(e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="registerPassword" className="block text-sm font-medium text-foreground mb-2">
+                      Criar Senha
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="registerPassword"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={registerPassword}
+                        onChange={(e) => setRegisterPassword(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
 
-            {/* Perfis demo — clique para preencher */}
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-foreground">Acesso rápido (demo):</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {DEMO_USERS.map((u) => {
-                  const Icon = u.role === "admin" ? ShieldCheck : Briefcase;
-                  return (
-                    <button
-                      key={u.email}
-                      type="button"
-                      onClick={() => fillCredentials(u)}
-                      className="text-left p-3 rounded-lg border border-border bg-surface hover:border-primary/50 hover:bg-surface-elevated transition-colors group"
-                    >
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <Icon className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-xs font-semibold text-foreground capitalize">
-                          {u.role}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-muted-foreground truncate">{u.email}</p>
-                      <p className="text-[11px] font-mono text-muted-foreground/80 mt-0.5">
-                        {u.password}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full mt-6 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                        Criando...
+                      </>
+                    ) : (
+                      "Criar Conta"
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
+
+            {view === "forgot_password" && (
+              <>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Recuperar senha</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Enviaremos um e-mail com instruções para atualizar e autorizar seu acesso.
+                </p>
+
+                {error && (
+                  <div className="mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-sm text-destructive">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleForgotSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="forgotEmail" className="block text-sm font-medium text-foreground mb-2">
+                      E-mail cadastrado
+                    </label>
+                    <input
+                      id="forgotEmail"
+                      type="email"
+                      placeholder="seu@email.com"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      autoFocus
+                      className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full mt-6 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                        Enviando...
+                      </>
+                    ) : (
+                      "Enviar E-mail"
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
           </div>
 
           {/* Footer Links */}
           <div className="mt-6 flex flex-col gap-3 text-center">
-            <a href="#" className="text-sm text-primary hover:underline font-medium">
-              Esqueci minha senha
-            </a>
-            <div className="text-xs text-muted-foreground">
-              Não tem acesso?{" "}
-              <a href="#" className="text-primary hover:underline font-medium">
-                Solicitar teste
-              </a>
-            </div>
+            {view === "login" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setView("forgot_password");
+                    setError("");
+                    setSuccessMessage("");
+                  }}
+                  className="text-sm text-primary hover:underline font-medium"
+                >
+                  Esqueci minha senha
+                </button>
+                <div className="text-xs text-muted-foreground">
+                  Não tem acesso?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setView("register");
+                      setError("");
+                      setSuccessMessage("");
+                    }}
+                    className="text-primary hover:underline font-medium"
+                  >
+                    Criar conta
+                  </button>
+                </div>
+              </>
+            )}
+            {view !== "login" && (
+              <button
+                type="button"
+                onClick={() => {
+                  setView("login");
+                  setError("");
+                  setSuccessMessage("");
+                }}
+                className="text-sm text-primary hover:underline font-medium"
+              >
+                Voltar para o login
+              </button>
+            )}
           </div>
 
           {/* Terms */}
           <p className="mt-8 text-xs text-muted-foreground text-center">
-            Ao entrar, você concorda com nossos{" "}
+            Ao acessar, você concorda com nossos{" "}
             <a href="#" className="text-primary hover:underline">
               Termos de Serviço
             </a>{" "}
@@ -288,3 +516,4 @@ function LoginPage() {
     </div>
   );
 }
+
