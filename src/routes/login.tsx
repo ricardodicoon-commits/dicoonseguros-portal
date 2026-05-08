@@ -12,9 +12,45 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+function ReCaptcha({ onVerify }: { onVerify: () => void }) {
+  const [verified, setVerified] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleVerify = () => {
+    if (verified || loading) return;
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setVerified(true);
+      onVerify();
+    }, 800);
+  };
+
+  return (
+    <div className="flex items-center justify-between p-3 border border-border rounded-lg bg-background w-full max-w-[300px] mb-4 shadow-sm">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={handleVerify}
+          className={`w-7 h-7 rounded border flex items-center justify-center transition-colors ${verified ? 'bg-green-500 border-green-500' : 'border-border bg-background hover:bg-muted'}`}
+        >
+          {loading && <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />}
+          {verified && <CheckCircle2 className="w-5 h-5 text-white" />}
+        </button>
+        <span className="text-sm font-medium text-foreground">Não sou um robô</span>
+      </div>
+      <div className="flex flex-col items-center justify-center text-primary">
+        <ShieldCheck className="w-6 h-6" />
+        <span className="text-[10px] mt-0.5 font-medium">reCAPTCHA</span>
+      </div>
+    </div>
+  );
+}
+
 function LoginPage() {
   const navigate = useNavigate();
   const [view, setView] = useState<"login" | "register" | "forgot_password">("login");
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   
   // Form states
   const [email, setEmail] = useState("");
@@ -32,11 +68,24 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const changeView = (newView: typeof view) => {
+    setView(newView);
+    setError("");
+    setSuccessMessage("");
+    setCaptchaVerified(false);
+  };
+
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
     setIsLoading(true);
+
+    if (!captchaVerified) {
+      setError("Por favor, confirme que você não é um robô (reCAPTCHA)");
+      setIsLoading(false);
+      return;
+    }
 
     setTimeout(() => {
       if (!email || !password) {
@@ -66,6 +115,12 @@ function LoginPage() {
     setSuccessMessage("");
     setIsLoading(true);
 
+    if (!captchaVerified) {
+      setError("Por favor, confirme que você não é um robô (reCAPTCHA)");
+      setIsLoading(false);
+      return;
+    }
+
     setTimeout(() => {
       if (!registerName || !registerEmail || !registerPassword) {
         setError("Preencha todos os campos");
@@ -74,7 +129,7 @@ function LoginPage() {
       }
       // Simulate account creation
       setSuccessMessage("Conta criada com sucesso! Faça login para continuar.");
-      setView("login");
+      changeView("login");
       setEmail(registerEmail);
       setIsLoading(false);
     }, 600);
@@ -86,6 +141,12 @@ function LoginPage() {
     setSuccessMessage("");
     setIsLoading(true);
 
+    if (!captchaVerified) {
+      setError("Por favor, confirme que você não é um robô (reCAPTCHA)");
+      setIsLoading(false);
+      return;
+    }
+
     setTimeout(() => {
       if (!forgotEmail) {
         setError("Preencha o e-mail");
@@ -94,7 +155,7 @@ function LoginPage() {
       }
       // Simulate email sending
       setSuccessMessage(`Um e-mail de recuperação e autorização foi enviado para ${forgotEmail}`);
-      setView("login");
+      changeView("login");
       setIsLoading(false);
     }, 600);
   };
@@ -104,6 +165,7 @@ function LoginPage() {
     setPassword(u.password);
     setError("");
     setSuccessMessage("");
+    setCaptchaVerified(true);
   };
 
   const benefits = [
@@ -265,6 +327,10 @@ function LoginPage() {
                     </div>
                   </div>
 
+                  <div className="pt-2">
+                    <ReCaptcha onVerify={() => setCaptchaVerified(true)} />
+                  </div>
+
                   {/* Login Button */}
                   <button
                     type="submit"
@@ -387,6 +453,10 @@ function LoginPage() {
                     </div>
                   </div>
 
+                  <div className="pt-2">
+                    <ReCaptcha onVerify={() => setCaptchaVerified(true)} />
+                  </div>
+
                   <button
                     type="submit"
                     disabled={isLoading}
@@ -435,6 +505,10 @@ function LoginPage() {
                     />
                   </div>
 
+                  <div className="pt-2">
+                    <ReCaptcha onVerify={() => setCaptchaVerified(true)} />
+                  </div>
+
                   <button
                     type="submit"
                     disabled={isLoading}
@@ -460,11 +534,7 @@ function LoginPage() {
               <>
                 <button
                   type="button"
-                  onClick={() => {
-                    setView("forgot_password");
-                    setError("");
-                    setSuccessMessage("");
-                  }}
+                  onClick={() => changeView("forgot_password")}
                   className="text-sm text-primary hover:underline font-medium"
                 >
                   Esqueci minha senha
@@ -473,11 +543,7 @@ function LoginPage() {
                   Não tem acesso?{" "}
                   <button
                     type="button"
-                    onClick={() => {
-                      setView("register");
-                      setError("");
-                      setSuccessMessage("");
-                    }}
+                    onClick={() => changeView("register")}
                     className="text-primary hover:underline font-medium"
                   >
                     Criar conta
@@ -488,11 +554,7 @@ function LoginPage() {
             {view !== "login" && (
               <button
                 type="button"
-                onClick={() => {
-                  setView("login");
-                  setError("");
-                  setSuccessMessage("");
-                }}
+                onClick={() => changeView("login")}
                 className="text-sm text-primary hover:underline font-medium"
               >
                 Voltar para o login
