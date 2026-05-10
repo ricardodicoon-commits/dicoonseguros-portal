@@ -128,7 +128,7 @@ function LoginPage() {
         return;
       }
       // Simulate account creation
-      setSuccessMessage("Conta criada com sucesso! Faça login para continuar.");
+      setSuccessMessage("Cadastro recebido! Seu acesso será liberado mediante autorização por e-mail do administrador.");
       changeView("login");
       setEmail(registerEmail);
       setIsLoading(false);
@@ -160,13 +160,7 @@ function LoginPage() {
     }, 600);
   };
 
-  const fillCredentials = (u: (typeof DEMO_USERS)[number]) => {
-    setEmail(u.email);
-    setPassword(u.password);
-    setError("");
-    setSuccessMessage("");
-    setCaptchaVerified(true);
-  };
+
 
   const benefits = [
     {
@@ -348,41 +342,7 @@ function LoginPage() {
                   </button>
                 </form>
 
-                {/* Divider */}
-                <div className="my-6 flex items-center">
-                  <div className="flex-1 h-px bg-border"></div>
-                  <span className="px-3 text-xs text-muted-foreground">ou</span>
-                  <div className="flex-1 h-px bg-border"></div>
-                </div>
 
-                {/* Perfis demo */}
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-foreground">Acesso rápido (demo):</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {DEMO_USERS.map((u) => {
-                      const Icon = u.role === "admin" ? ShieldCheck : Briefcase;
-                      return (
-                        <button
-                          key={u.email}
-                          type="button"
-                          onClick={() => fillCredentials(u)}
-                          className="text-left p-3 rounded-lg border border-border bg-surface hover:border-primary/50 hover:bg-surface-elevated transition-colors group"
-                        >
-                          <div className="flex items-center gap-2 mb-1.5">
-                            <Icon className="w-3.5 h-3.5 text-primary" />
-                            <span className="text-xs font-semibold text-foreground capitalize">
-                              {u.role}
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-muted-foreground truncate">{u.email}</p>
-                          <p className="text-[11px] font-mono text-muted-foreground/80 mt-0.5">
-                            {u.password}
-                          </p>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
               </>
             )}
 
