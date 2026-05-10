@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff, Shield, CheckCircle2, ShieldCheck, Briefcase } from "lucide-react";
-import { setAuth, validateCredentials, DEMO_USERS, getAuthToken } from "@/lib/auth";
+import { setAuth, validateCredentials, DEMO_USERS, getAuthToken, requestAccess } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: () => {
@@ -121,18 +121,18 @@ function LoginPage() {
       return;
     }
 
-    setTimeout(() => {
-      if (!registerName || !registerEmail || !registerPassword) {
-        setError("Preencha todos os campos");
-        setIsLoading(false);
-        return;
-      }
-      // Simulate account creation
-      setSuccessMessage("Cadastro recebido! Seu acesso será liberado mediante autorização por e-mail do administrador.");
-      changeView("login");
-      setEmail(registerEmail);
+    // Send access request to admin via email
+    const requestOk = await requestAccess(registerEmail, registerName);
+    if (!requestOk) {
+      setError("Falha ao solicitar acesso. Tente novamente mais tarde.");
       setIsLoading(false);
-    }, 600);
+      return;
+    }
+
+    setSuccessMessage("Cadastro recebido! Seu acesso será liberado mediante autorização por e‑mail do administrador.");
+    changeView("login");
+    setEmail(registerEmail);
+    setIsLoading(false);
   };
 
   const handleForgotSubmit = async (e: React.FormEvent) => {

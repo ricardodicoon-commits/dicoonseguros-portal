@@ -42,6 +42,20 @@ function getStorage(): Storage | null {
   }
 }
 
+export async function requestAccess(email: string, name: string): Promise<boolean> {
+  try {
+    const response = await fetch('/api/request-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name }),
+    });
+    return response.ok;
+  } catch (e) {
+    console.error('Failed to request access:', e);
+    return false;
+  }
+}
+
 export function validateCredentials(email: string, password: string): DemoUser | null {
   const normalized = email.trim().toLowerCase();
   return (
